@@ -1,0 +1,100 @@
+#-----------------------------------------------------------------------------/
+# project: rfc4938
+# file: Makefile.in
+# version: 1.00
+# date: October 15, 2007
+#
+#      Copyright owner (c) 2007 by cisco Systems, Inc.
+#
+# ===========================
+#
+# This is the makefile
+#
+# ===========================
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#-----------------------------------------------------------------------------/
+
+SRC = src
+PPPOE_SRC = src/pppoe
+INST = bin
+CFLAGS = @CFLAGS@ -g 
+
+all : rfc4938 rfc4938ctl pppoe
+
+rfc4938 : $(SRC)/rfc4938.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_neighbor_manager.o $(SRC)/rfc4938_debug.o
+	$(CC) $(CFLAGS) -o $(SRC)/rfc4938 $(SRC)/rfc4938.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_neighbor_manager.o $(SRC)/rfc4938_debug.o
+
+rfc4938.o : $(SRC)/rfc4938.c $(SRC)/rfc4938.h 
+	$(CC) $(CFLAGS) -c $(SRC)/rfc4938.c -o $(SRC)/rfc4938.o
+
+rfc4938ctl : $(SRC)/rfc4938ctl.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_debug.o
+	$(CC) $(CFLAGS) -o $(SRC)/rfc4938ctl $(SRC)/rfc4938ctl.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_debug.o
+
+rfc4938ctl.o : $(SRC)/rfc4938ctl.c $(SRC)/rfc4938.h 
+	$(CC) $(CFLAGS) -c $(SRC)/rfc4938ctl.c -o  $(SRC)/rfc4938ctl.o 
+
+rfc4938ctl_message.o : $(SRC)/rfc4938ctl_message.c $(SRC)/rfc4938ctl_message.h
+	$(CC) $(CFLAGS) -c $(SRC)/rfc4938ctl_message.c -o $(SRC)/rfc4938ctl_message.o 
+
+rfc4938_neighbor_manager.o : $(SRC)/rfc4938_neighbor_manager.c $(SRC)/rfc4938_neighbor_manager.h
+	$(CC) $(CFLAGS) -c $(SRC)/rfc4938_neighbor_manager.c -o $(SRC)/rfc4938_neighbor_manager.o
+
+rfc4938_debug.o : $(SRC)/rfc4938_debug.c $(SRC)/rfc4938_debug.h
+	$(CC) $(CFLAGS) -c $(SRC)/rfc4938_debug.c -o $(SRC)/rfc4938_debug.o
+
+pppoe: $(PPPOE_SRC)/pppoe.o $(PPPOE_SRC)/if.o $(PPPOE_SRC)/debug.o $(PPPOE_SRC)/common.o $(PPPOE_SRC)/ppp.o $(PPPOE_SRC)/discovery.o $(PPPOE_SRC)/pppoe_rfc4938.o $(PPPOE_SRC)/pppoe_rfc4938_debug.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_neighbor_manager.o $(PPPOE_SRC)/pppoe_rfc4938_nbr.o
+	$(CC) -o $(PPPOE_SRC)/pppoe $(PPPOE_SRC)/pppoe.o $(PPPOE_SRC)/if.o $(PPPOE_SRC)/debug.o $(PPPOE_SRC)/common.o $(PPPOE_SRC)/ppp.o $(PPPOE_SRC)/discovery.o $(PPPOE_SRC)/pppoe_rfc4938.o $(PPPOE_SRC)/pppoe_rfc4938_debug.o $(SRC)/rfc4938ctl_message.o $(SRC)/rfc4938_neighbor_manager.o $(PPPOE_SRC)/pppoe_rfc4938_nbr.o
+
+pppoe.o: $(PPPOE_SRC)/pppoe.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/pppoe.o $(PPPOE_SRC)/pppoe.c
+
+discovery.o: $(PPPOE_SRC)/discovery.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/discovery.o $(PPPOE_SRC)/discovery.c
+
+ppp.o: $(PPPOE_SRC)/ppp.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/ppp.o $(PPPOE_SRC)/ppp.c
+
+pppoe_rfc4938.o: $(PPPOE_SRC)/pppoe_rfc4938.c $(PPPOE_SRC)/pppoe_rfc4938.h 
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/pppoe_rfc4938.o $(PPPOE_SRC)/pppoe_rfc4938.c 
+
+pppoe_rfc4938_nbr.o: $(PPPOE_SRC)/pppoe_rfc4938_nbr.c $(PPPOE_SRC)/pppoe_rfc4938_nbr.h 
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/pppoe_rfc4938_nbr.o $(PPPOE_SRC)/pppoe_rfc4938_nbr.c 
+
+pppoe_rfc4938_debug.o : $(PPPOE_SRC)/pppoe_rfc4938_debug.c $(PPPOE_SRC)/pppoe_rfc4938_debug.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/pppoe_rfc4938_debug.o $(PPPOE_SRC)/pppoe_rfc4938_debug.c
+
+if.o: $(PPPOE_SRC)/if.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/if.o $(PPPOE_SRC)/if.c
+
+common.o: $(PPPOE_SRC)/common.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/common.o $(PPPOE_SRC)/common.c
+
+debug.o: $(PPPOE_SRC)/debug.c $(PPPOE_SRC)/pppoe.h
+	$(CC) $(CFLAGS) '-DVERSION="$(VERSION)"' -c -o $(PPPOE_SRC)/debug.o $(PPPOE_SRC)/debug.c
+
+clean :
+	rm -f $(INST)/rfc4938 $(INST)/rfc4938ctl $(INST)/pppoe $(SRC)/rfc4938 $(SRC)/rfc4938ctl $(SRC)/*.o $(SRC)/*~ $(PPPOE_SRC)/*.o $(PPPOE_SRC)/pppoe $(PPPOE_SRC)/*~
+
+install: all
+	cp $(SRC)/rfc4938 $(SRC)/rfc4938ctl $(PPPOE_SRC)/pppoe $(INST)/
+
+dist: clean
+#first rename trunk directory to rfc4938-1.00
+	tar -cvf ../rfc4938-1.00.tar ../rfc4938-1.00
+	gzip ../rfc4938-1.00.tar
+	md5sum ../rfc4938-1.00.tar.gz
+
+.PHONY: clean
