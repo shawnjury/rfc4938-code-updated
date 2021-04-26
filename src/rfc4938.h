@@ -106,6 +106,7 @@
 #define CDR_SCLR_MAX ( 3 )
 #define RSRCS_MAX ( 100 )
 #define RLQ_MAX ( 100 ) 
+#define STR_MAX ( 129 )
 
 /*
  * rfc4938.c function declarations
@@ -173,8 +174,8 @@ extern int ctl_read_config_file (char *filename);
 
 /* config variables */
 static struct config_vars {
-    char *iface;
-    char *service_name;
+    char iface[STR_MAX];
+    char service_name[STR_MAX];
     UINT16_t max_nbrs;
     UINT16_t rfc4938_port;
     UINT16_t ctl_port;

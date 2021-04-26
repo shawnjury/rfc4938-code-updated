@@ -12,9 +12,6 @@
 * This file was modified on Feb 2008 by Cisco Systems, Inc.
 ***********************************************************************/
 
-static char const RCSID[] =
-"$Id: discovery.c,v 1.25 2006/01/03 03:20:38 dfs Exp $";
-
 #include "pppoe.h"
 #include "pppoe_rfc4938.h"
 

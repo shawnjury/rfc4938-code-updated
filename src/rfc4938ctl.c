@@ -460,7 +460,7 @@ send_messages (void *p2buffer)
 int 
 ctl_read_config_file (char *filename) 
 {
-    int i, line_count;
+    int i;
 
     FILE *fp;
 #define MAX_INPUT_LENGTH  ( 512 )
@@ -476,7 +476,6 @@ ctl_read_config_file (char *filename)
         return (ENOENT);
     }
 
-    line_count = 0;
     while (fgets(input_string, MAX_INPUT_LENGTH, fp)) {
 
         argv[0] = strtok(input_string, " \t\n");

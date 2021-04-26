@@ -42,8 +42,13 @@
 #define LNLEN ( 100 )
 #endif
 
-#ifndef SHOWLEN
-#define SHOWLEN ( LNLEN * (get_max_nbrs() + 1) )
+// Setting max neighbors to a set value.
+#ifndef MAX_NBRS_CONST 
+#define MAX_NBRS_CONST ( 100 ) 
+#endif
+
+#ifndef NBRLEN
+#define NBRLEN ( LNLEN * (MAX_NBRS_CONST + 1) )
 #endif
 
 /*

@@ -816,7 +816,8 @@ recvInbandGrant (PPPoEConnection *conn, PPPoEPacket *packet)
         (UINT16_t) curTag[3];
     if ((curTag - packet->payload) + tagLen + TAG_HDR_SIZE > len) {
         PPPOE_DEBUG_ERROR("pppoe(%s,%u): Invalid PPPoE tag length in"
-                          " inband grant (%u)", conn->peer_ip, ntohs(conn->session), tagLen);
+                          " inband grant (%u,%u)", conn->peer_ip, 
+                          ntohs(conn->session), tagType, tagLen);
         return;
     }
 

@@ -15,9 +15,6 @@
 *
 ***********************************************************************/
 
-static char const RCSID[] =
-"$Id: ppp.c,v 1.7 2006/01/03 03:05:06 dfs Exp $";
-
 #include "pppoe.h"
 
 #ifdef HAVE_SYSLOG_H

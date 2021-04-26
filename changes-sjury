@@ -1,0 +1,23 @@
+rfc4938-code-update:
+
+rfc4938.c: Removed unused variables:
+
+line_count from read_config_file
+retval from terminate_neighbor
+
+rfc4938.h:  Added a fixed length for service_name and interface name.  Using 128 char.
+
+rfc4938.c:  Changed strings to represent max service_name/interface.
+
+rfc4938_neighbor_manager.h: defined get_max_nbrs
+rfc4938_neighbor_manager.c: set strncpy length to SHOWLEN
+
+rfc4938ctl.c: removed line_count from ctl_read_config_file (not used)
+
+src/if.h: added IFNAMSIZ - 1 for sizeof(ifr.if_name) in strncpy
+
+src/common.c:  Checked return value to silence compiler.  Didn't do anything with it
+     as per original code.
+     Changed _BSD_SOURCE to _DEFAULT_SOURCE
+
+src/pppoe_rfc4938.c:  Used tagType in recvInbandGrant

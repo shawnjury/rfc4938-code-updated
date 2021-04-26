@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# rfc4938       This shell script enables the automatic use of rfc4938
+#
+# description:  Enable run of rfc4938
+# processname:  rfc4938
+#
+
+lockfile=/tmp/rfc4938.lock
+
+RETVAL=0
+
+start() {
+        echo -n $"Enabling rfc4938: "
+        /usr/sbin/rfc4938 &
+        touch "$lockfile"
+        RETVAL=$?
+        echo
+}
+
+stop() {
+        echo -n $"Disabling rfc4938: "
+        rm -f "$lockfile"
+        killall rfc4938
+        RETVAL=$?
+        echo
+}
+
+restart() {
+        stop
+        start
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart|force-reload)
+        restart
+        ;;
+  reload)
+        ;;
+  condrestart)
+        [ -f "$lockfile" ] && restart
+        ;;
+  status)
+        if [ -f $lockfile ]; then
+                echo $"rfc4938 is enabled."
+                RETVAL=0
+        else
+                echo $"rfc4938 is disabled."
+                RETVAL=3
+        fi
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+        exit 1
+esac
+
+exit $RETVAL
+

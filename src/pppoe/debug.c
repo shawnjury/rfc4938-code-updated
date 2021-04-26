@@ -17,9 +17,6 @@
 * This file was modified on Feb 2008 by Cisco Systems, Inc.
 ***********************************************************************/
 
-static char const RCSID[] =
-"$Id: debug.c,v 1.6 2006/01/03 03:05:06 dfs Exp $";
-
 #include "pppoe.h"
 
 #ifdef DEBUGGING_ENABLED

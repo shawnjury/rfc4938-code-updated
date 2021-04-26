@@ -193,15 +193,18 @@ neighbor_print_all_string (char **dgram)
             if (tmp->neighbor_addr != 0 ) {
                 sprintf(tmp_str, "%u\t\t%s\t ", tmp->neighbor_id, 
                         inet_ntoa(*(struct in_addr *)&(tmp->neighbor_addr)));
-		strncat(*dgram, tmp_str, strlen(tmp_str));
+                // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
+                strncat(*dgram, tmp_str, NBRLEN);
 
                 if (tmp->session_state == ACTIVE) {
                     sprintf(tmp_str, "ACTIVE\n");
-		    strncat(*dgram, tmp_str, strlen(tmp_str));
+                    // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
+                    strncat(*dgram, tmp_str, NBRLEN);
                 } else {
                     sprintf(tmp_str, "INACTIVE\n");
-		    strncat(*dgram, tmp_str, strlen(tmp_str));
-		}
+                    // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
+                    strncat(*dgram, tmp_str, NBRLEN);
+                }
             }
         }
         /* move to the next element */
@@ -406,10 +409,10 @@ neighbor_pointer (
         if (tmp->state == ACTIVE &&
             tmp->neighbor_id == neighbor_id) {
 
-	  *p2neighbor = tmp;
-	  
-	  rc = SUCCESS;
-	  break;
+          *p2neighbor = tmp;
+          
+          rc = SUCCESS;
+          break;
 
         } else {
             /* move to the next element */
@@ -457,10 +460,10 @@ neighbor_pointer_by_addr (UINT32_t ip_addr,
         if (tmp->state == ACTIVE &&
             tmp->neighbor_addr == ip_addr) {
 
-	  *p2neighbor = tmp;
-	  
-	  rc = SUCCESS;
-	  break;
+          *p2neighbor = tmp;
+          
+          rc = SUCCESS;
+          break;
 
         } else {
             /* move to the next element */
@@ -509,10 +512,10 @@ neighbor_pointer_by_pid (pid_t pid,
         if (tmp->state == ACTIVE &&
             tmp->pid == pid) {
 
-	  *p2neighbor = tmp;
-	  
-	  rc = SUCCESS;
-	  break;
+          *p2neighbor = tmp;
+          
+          rc = SUCCESS;
+          break;
 
         } else {
             /* move to the next element */
@@ -560,10 +563,10 @@ neighbor_pointer_by_port (UINT16_t port,
         if (tmp->state == ACTIVE &&
             tmp->neighbor_port == port) {
 
-	  *p2neighbor = tmp;
-	  
-	  rc = SUCCESS;
-	  break;
+          *p2neighbor = tmp;
+          
+          rc = SUCCESS;
+          break;
 
         } else {
             /* move to the next element */
@@ -608,7 +611,7 @@ neighbor_toggle_all (
 
         if (tmp->state == ACTIVE) {
             pt2func(tmp, 0, credit_scalar);
-	}
+        }
 
         tmp = tmp->next;
     }

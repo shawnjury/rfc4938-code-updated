@@ -328,9 +328,9 @@ config_neighbor (UINT32_t argc, char *argv[])
                         (UINT32_t)strtoul(argv[1], NULL, 10), argv[2]);
     RFC4938_DEBUG_EVENT("rfc4938: PORT %u\n", CONFIG.rfc4938_port);
 
-    rc_errno = neighbor_allocate(strtoul(argv[1], NULL, 10),   	/* node id */
-                                 inet_addr(argv[2]),  		/* node addr */
-                                 0);  	/* rfc4938 port */
+    rc_errno = neighbor_allocate(strtoul(argv[1], NULL, 10),       /* node id */
+                                 inet_addr(argv[2]),          /* node addr */
+                                 0);      /* rfc4938 port */
     return rc_errno;
 }
 
@@ -395,7 +395,7 @@ get_ipaddrs(char **ip_addrs)
 int
 read_config_file (char *filename) 
 {
-    int i, line_count, skip_address = 0;
+    int i, skip_address = 0;
 
     FILE *fp;
 #define MAX_INPUT_LENGTH  ( 512 )
@@ -416,7 +416,6 @@ read_config_file (char *filename)
     /* retrieve the currently configured IPv4 addresses */
     get_ipaddrs(ip_addrs);
 
-    line_count = 0;
     while (fgets(input_string, MAX_INPUT_LENGTH, fp)) {
 
         argv[0] = strtok(input_string, " \t\n");
@@ -444,19 +443,19 @@ read_config_file (char *filename)
 
         /* iface */
         else if (strncmp(argv[0], "IFACE", strlen("IFACE")) == 0) {
-	    CONFIG.iface = (char *)malloc(strlen(argv[1])*sizeof(char));
-	    if (CONFIG.iface == NULL) {
-		RFC4938_DEBUG_ERROR("rfc4938: ERROR: iface malloc error\n");
-		return (ENOMEM);
-	    }
-            strncpy(CONFIG.iface, argv[1], strlen(argv[1]));
+        //CONFIG.iface = (char *)malloc(STR_MAX*sizeof(char));
+        if (CONFIG.iface == NULL) {
+        RFC4938_DEBUG_ERROR("rfc4938: ERROR: iface malloc error\n");
+        return (ENOMEM);
+        }
+            strncpy(CONFIG.iface, argv[1], STR_MAX - 1);
         }
 
         /* max_neighbors */
         else if (strncmp(argv[0], "MAX_NEIGHBORS", 
                          strlen("MAX_NEIGHBORS")) == 0) {
             CONFIG.max_nbrs = strtoul(argv[1], NULL, 10);
-	    neighbor_init(CONFIG.max_nbrs);
+        neighbor_init(CONFIG.max_nbrs);
         }
 
         /* port */
@@ -471,9 +470,9 @@ read_config_file (char *filename)
 
         /* neighbor */
         else if (strncmp(argv[0], "NEIGHBOR", strlen("NEIGHBOR")) == 0) {            
-	    if (check_ip(argv[2]) != SUCCESS) {
-		return (ENOENT);
-	    }
+        if (check_ip(argv[2]) != SUCCESS) {
+        return (ENOENT);
+        }
 
             /* make sure we don't add ourselves as a valid neighbor */
             skip_address = 0;
@@ -500,15 +499,15 @@ read_config_file (char *filename)
 
         /* service_name */
         else if (strncmp(argv[0], "SERVICE_NAME", strlen("SERVICE_NAME")) == 0) {
-	    CONFIG.service_name = (char *)malloc(strlen(argv[1])*sizeof(char));
-	    if (CONFIG.service_name == NULL) {
-		RFC4938_DEBUG_ERROR("rfc4938: Error, service_name malloc error\n");
-		return (ENOMEM);
-	    }
-            strncpy(CONFIG.service_name, argv[1], strlen(argv[1]));
+        //CONFIG.service_name = (char *)malloc(STR_MAX*sizeof(char));
+        if (CONFIG.service_name == NULL) {
+        RFC4938_DEBUG_ERROR("rfc4938: Error, service_name malloc error\n");
+        return (ENOMEM);
+        }
+            strncpy(CONFIG.service_name, argv[1], STR_MAX-1);
         }
 
-	/* debug_level */
+    /* debug_level */
         else if (strncmp(argv[0], "DEBUG_LEVEL", strlen("DEBUG_LEVEL")) == 0) {
             CONFIG.debug_level = strtoul(argv[1], NULL, 10);
         } else {
@@ -540,16 +539,16 @@ check_ip (char *addr)
     token = strtok(orig, ".");
 
     while (strtok(NULL, ".") != NULL) {
-	i++;
-	value = strtoul(token, 0, 10);
-	if (value < 0 || value > 255) {
-	    RFC4938_DEBUG_ERROR("rfc4938: Error, ip address octets must be between 0 and 255\n");
-	    return (EFAULT);
-	}
+    i++;
+    value = strtoul(token, 0, 10);
+    if (value < 0 || value > 255) {
+        RFC4938_DEBUG_ERROR("rfc4938: Error, ip address octets must be between 0 and 255\n");
+        return (EFAULT);
+    }
     }
     if (i != 3) {
-	RFC4938_DEBUG_ERROR("rfc4938: Error, ip address incorrect length\n");
-	return (EFAULT);
+    RFC4938_DEBUG_ERROR("rfc4938: Error, ip address incorrect length\n");
+    return (EFAULT);
     }
     
     return SUCCESS;
@@ -643,14 +642,14 @@ initiate_sessions (UINT32_t neighbor_id, UINT16_t credit_scalar)
     rfc4938_neighbor_element_t *tmp;
 
     if (neighbor_id == 0) {
-	neighbor_toggle_all(&initiate_neighbor, credit_scalar);
-	return SUCCESS;
+    neighbor_toggle_all(&initiate_neighbor, credit_scalar);
+    return SUCCESS;
     } else {
-    	if (neighbor_pointer(neighbor_id, &tmp) != SUCCESS) {
-    	    RFC4938_DEBUG_ERROR("ERROR: unable to find neighbor_id %u\n",
+        if (neighbor_pointer(neighbor_id, &tmp) != SUCCESS) {
+            RFC4938_DEBUG_ERROR("ERROR: unable to find neighbor_id %u\n",
                                 neighbor_id);
-   	    return (EBADMSG); 
-    	}    
+           return (EBADMSG); 
+        }    
 
         RFC4938_DEBUG_EVENT("rfc4938: initiating session for neighbor %u "
                             "credit_scalar %u\n", neighbor_id,
@@ -658,7 +657,7 @@ initiate_sessions (UINT32_t neighbor_id, UINT16_t credit_scalar)
 
         initiate_neighbor(tmp, 0, credit_scalar);
 
-    	return SUCCESS;  
+        return SUCCESS;  
     }
 }
 
@@ -678,18 +677,18 @@ terminate_sessions (UINT32_t neighbor_id)
 
     if (neighbor_id == 0) {
         RFC4938_DEBUG_EVENT("rfc4938: terminating all neighbors\n");
-	neighbor_toggle_all(&terminate_neighbor, 0);
-	return SUCCESS;
+    neighbor_toggle_all(&terminate_neighbor, 0);
+    return SUCCESS;
     } else {
-    	if (neighbor_pointer(neighbor_id, &tmp) != SUCCESS) {
-    	    RFC4938_DEBUG_ERROR("rfc4938: Error, unable to find neighbor_id %u\n",
+        if (neighbor_pointer(neighbor_id, &tmp) != SUCCESS) {
+            RFC4938_DEBUG_ERROR("rfc4938: Error, unable to find neighbor_id %u\n",
                                 neighbor_id);
-   	    return (EBADMSG); 
-    	}
+           return (EBADMSG); 
+        }
 
         terminate_neighbor(tmp, 0, 0);
-	RFC4938_DEBUG_EVENT("rfc4938: terminate:\nneighbor\t%u\n", neighbor_id);
-    	return SUCCESS;  
+    RFC4938_DEBUG_EVENT("rfc4938: terminate:\nneighbor\t%u\n", neighbor_id);
+        return SUCCESS;  
     }
 }
 
@@ -765,7 +764,7 @@ padq_session (UINT32_t neighbor_id,
     /* find the neighbor */
     if (neighbor_pointer(neighbor_id, &tmp) != SUCCESS) {
         RFC4938_DEBUG_ERROR("rfc4938: Error, unable to find neighbor_id %u\n", neighbor_id);
-   	return (EBADMSG); 
+       return (EBADMSG); 
     }
 
     /* check to see if there is a session up for it */
@@ -841,7 +840,7 @@ padg_session (UINT32_t neighbor_id, UINT16_t credits)
         RFC4938_DEBUG_ERROR("rfc4938: Error, unable to find neighbor_id %u"
                             "in padg_session()\n", neighbor_id);
         free(p2buffer);
-   	return (EBADMSG); 
+       return (EBADMSG); 
     }    
     
     /* check to see if there is a session up for it */
@@ -917,7 +916,7 @@ show_session (void)
     if ( z < 0 ) {
         RFC4938_DEBUG_ERROR("rfc4938: Error sending UDP "
                             "packet in show_session()");
-	close(s);
+    close(s);
         return (EFAULT);
     }
 
@@ -1118,7 +1117,6 @@ terminate_neighbor (rfc4938_neighbor_element_t *nbr,
                     UINT16_t not_used, UINT16_t not_used2)
 {
     
-    int retval;
     void *p2buffer;
 
     if (nbr == NULL) {
@@ -1145,8 +1143,6 @@ terminate_neighbor (rfc4938_neighbor_element_t *nbr,
         free(p2buffer);
         return;
     }
-
-    retval = sendCTLPacket(nbr->neighbor_port, p2buffer);
     
     nbr->session_state = INACTIVE;
     nbr->pid = 0;
@@ -1375,10 +1371,10 @@ main (int argc, char *argv[])
     while ((c = getopt(argc, argv, "vhf:")) != EOF)
     {
         switch (c) {
-	case 'h':  /* usage */
+    case 'h':  /* usage */
             printf("%s", usage);
             return SUCCESS;
-	    break;
+        break;
         case 'v':
             printf("%s", version);
             return SUCCESS;
@@ -1386,19 +1382,19 @@ main (int argc, char *argv[])
         case 'f':  /* config file */
             memcpy(filename, optarg, MAXFILENAME);
             break;
-	default:
+    default:
             return (EBADMSG);
         }
     }
 
     if (filename[0] == 0) {
-	strncpy(filename, CONFIGPATH, MAXFILENAME);
+    strncpy(filename, CONFIGPATH, MAXFILENAME);
     }
 
     /* read the config file */
     if (read_config_file(filename)){
         RFC4938_DEBUG_ERROR("rfc4938: Error reading config file\n");
-	return (ECANCELED);
+    return (ECANCELED);
     }
 
     /* Initialize debugs */
@@ -1417,7 +1413,7 @@ main (int argc, char *argv[])
 
     /* print neighbors */
     if (rfc4938_debug == 2 || rfc4938_debug == 3) {
-	neighbor_print_all();
+    neighbor_print_all();
     }
 
     /* Check to make sure the pppoe binary exists */
