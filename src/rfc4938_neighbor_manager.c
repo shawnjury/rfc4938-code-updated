@@ -193,16 +193,13 @@ neighbor_print_all_string (char **dgram)
             if (tmp->neighbor_addr != 0 ) {
                 sprintf(tmp_str, "%u\t\t%s\t ", tmp->neighbor_id, 
                         inet_ntoa(*(struct in_addr *)&(tmp->neighbor_addr)));
-                // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
                 strncat(*dgram, tmp_str, NBRLEN);
 
                 if (tmp->session_state == ACTIVE) {
                     sprintf(tmp_str, "ACTIVE\n");
-                    // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
                     strncat(*dgram, tmp_str, NBRLEN);
                 } else {
                     sprintf(tmp_str, "INACTIVE\n");
-                    // sjury strncat(*dgram, tmp_str, strlen(tmp_str));
                     strncat(*dgram, tmp_str, NBRLEN);
                 }
             }
@@ -296,7 +293,6 @@ neighbor_release (
     tmp = neighbor_head;
 
     rc = ENODEV;
-    printf ("sjury rfc4938: in neighbor_release\n");
 
     while (tmp) {
 

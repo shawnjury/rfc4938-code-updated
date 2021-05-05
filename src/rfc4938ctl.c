@@ -297,19 +297,16 @@ terminate (int cmd, UINT32_t neighbor_id)
     if (rfc4938_cli_format_session_terminate(
            neighbor_id, 
            p2buffer) != SUCCESS) {
-	RFC4938_DEBUG_EVENT("sjury rfc4938 cli_format_session_terminate failed\n");
 	RFC4938_DEBUG_ERROR("ERROR: rfc4938_cli_format_session_terminate failed\n");
     	free(p2buffer);
   	return (EBADMSG);
     }
 
     if (send_messages(p2buffer) != SUCCESS) {
-	RFC4938_DEBUG_EVENT("sjury send_messages failed\n");
 	RFC4938_DEBUG_ERROR("ERROR: send_messages failed\n");
     	free(p2buffer);
   	return (EBADMSG);
     }
-    RFC4938_DEBUG_EVENT("sjury send_messages passed\n");
 
     free(p2buffer);
     return (SUCCESS);
@@ -411,9 +408,6 @@ send_messages (void *p2buffer)
         return (EFAULT);
     }
 
-    RFC4938_DEBUG_EVENT("sjury sendto %s:%u\n",
-		    inet_ntoa(adr_srvr.sin_addr),
-		    ntohs(adr_srvr.sin_port));
     z = sendto(s,
                p2buffer,
                buffer_length,
