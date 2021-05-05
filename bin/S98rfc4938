@@ -12,7 +12,7 @@ RETVAL=0
 
 start() {
         echo -n $"Enabling rfc4938: "
-        /usr/sbin/rfc4938 &
+        /usr/sbin/rfc4938 -f /etc/rfc4938.conf &
         touch "$lockfile"
         RETVAL=$?
         echo

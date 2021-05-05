@@ -503,6 +503,9 @@ sendPADT(PPPoEConnection *conn, char const *msg)
 
     PPPOE_DEBUG_EVENT("pppoe(%s): sending padt for session (%d)\n",
                       conn->peer_ip, ntohs(conn->session));
+    PPPOE_DEBUG_EVENT("pppoe(%s,%u): At termination peer_credits %u\n",
+                       conn->peer_ip, ntohs(conn->session),
+                       conn->peer_credits);
 
     /* Inform rfc4938 process that session is closing */
     send_session_stop(conn, conn->peer_ip);

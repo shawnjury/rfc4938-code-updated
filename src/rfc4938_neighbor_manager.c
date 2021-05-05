@@ -296,6 +296,8 @@ neighbor_release (
     tmp = neighbor_head;
 
     rc = ENODEV;
+    printf ("sjury rfc4938: in neighbor_release\n");
+
     while (tmp) {
 
         if (tmp->state == ACTIVE &&

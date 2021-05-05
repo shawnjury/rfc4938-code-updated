@@ -146,6 +146,8 @@ sendCTLPacket (UINT16_t port, void *p2buffer)
     int buffer_length;
     rfc4938_ctl_message_t *p2ctlmsg;
 
+    RFC4938_DEBUG_EVENT("rfc4938: sjury In sendCTLPacket");
+
     if (p2buffer == NULL) {
         RFC4938_DEBUG_ERROR("rfc4938: Attempted to send NULL p2buffer\n");
         return (ERANGE);
@@ -205,6 +207,9 @@ sendCTLPacket (UINT16_t port, void *p2buffer)
 
     len_inet = sizeof (peer_addr);
 
+    RFC4938_DEBUG_EVENT("rfc4938 sjury : "
+		   " to %s:%u\n", 
+		  inet_ntoa(peer_addr.sin_addr), port );
     z = sendto(s,   
                p2buffer,
                buffer_length,
@@ -1116,7 +1121,7 @@ void
 terminate_neighbor (rfc4938_neighbor_element_t *nbr, 
                     UINT16_t not_used, UINT16_t not_used2)
 {
-    
+    int retval; 
     void *p2buffer;
 
     if (nbr == NULL) {
@@ -1143,7 +1148,12 @@ terminate_neighbor (rfc4938_neighbor_element_t *nbr,
         free(p2buffer);
         return;
     }
+
+    retval = sendCTLPacket(nbr->neighbor_port, p2buffer);
     
+    if (retval != SUCCESS) {
+        RFC4938_DEBUG_ERROR("rfc4938: Unable to send CTL Packet\n");
+    }
     nbr->session_state = INACTIVE;
     nbr->pid = 0;
     nbr->neighbor_port = 0;
