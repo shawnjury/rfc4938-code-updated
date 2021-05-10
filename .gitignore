@@ -5,3 +5,5 @@ config.log
 src/pppoe/pppoe
 src/rfc4938
 src/rfc4938ctl
+config.h
+config.status
