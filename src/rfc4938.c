@@ -353,7 +353,8 @@ get_ipaddrs(char **ip_addrs)
     
     for (i=1,j=0;;i++,j++)
     {
-        ip_addrs[j] = malloc(sizeof(char) * IPV4_STR_LENGTH);
+	// Malloc enough space for IPv4 address and null char
+        ip_addrs[j] = malloc(sizeof(char) * (IPV4_STR_LENGTH + 1 ));
         if (ip_addrs[j] == NULL){
             RFC4938_DEBUG_ERROR("rfc4938: get_ipaddrs() malloc failure");
             return;
